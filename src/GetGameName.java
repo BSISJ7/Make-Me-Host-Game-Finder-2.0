@@ -92,7 +92,6 @@ public class GetGameName{
     	ArrayList<String> removeGame = new ArrayList<String>();
     	boolean removeString = true;
     	int index = 0;
-    	
     	for(String gameName : gameNames){
     		removeString = true;
     		for(Element getElement : getElements){
@@ -289,11 +288,6 @@ public class GetGameName{
         	System.out.println(link.text());
         }
 	}
-	
-    public static void main(String[] args) throws IOException {
-    	GetGameName run = new GetGameName();
-    	//new GetGameName("  ").runLink1("http://makemehost.com/lobby-and-queue.php");
-    }
     
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));

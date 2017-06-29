@@ -44,7 +44,6 @@ public class DisplayGameInfo extends JFrame {
 	private JScrollPane scrollPane;
 	private DefaultTableModel tModel;
 	private GameTrayIcon trayIcon;
-	private static final String[] gameCheck = {"fate", "fsn", "another", "stay night", "vamp"};
 	private ArrayList<String> gameList = new ArrayList<String>();
 	private StringChecker checkString;
 	private JTextArea textFilter;

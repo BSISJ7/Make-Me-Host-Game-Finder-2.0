@@ -8,24 +8,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jsoup-1.6.3.jar"/>
 	<classpathentry kind="lib" path="lib/tagsoup-1.2.1.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/bsf.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/serializer.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xalan.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xalansamples.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/lib/BCEL.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/lib/regexp.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/lib/runtime.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/lib/xml-apis.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/ant.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/java_cup.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/JLex.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/stylebook-1.0-b3_xalan-2.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/xalan2jdoc.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/tools/xalan2jtaglet.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xalanservlet.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xml-apis.jar"/>
-	<classpathentry kind="lib" path="/HomeWork/xalan-j_2_7_1/xsltc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

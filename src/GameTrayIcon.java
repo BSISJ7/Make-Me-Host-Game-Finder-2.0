@@ -48,7 +48,6 @@ public class GameTrayIcon {
 		TrayIcon icon = new TrayIcon(img, "MMH Game Finder", setupPopup());
 		icon.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
-				System.out.println("IT Be Runnin");
 				SwingUtilities.invokeLater(new Runnable(){
 					public void run(){
 						if(mainFrame.getExtendedState() == JFrame.ICONIFIED){

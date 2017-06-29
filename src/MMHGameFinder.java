@@ -25,12 +25,8 @@ import javax.swing.Timer;
 public class MMHGameFinder{
 	
 	private StringChecker checkString;
-	private static final String[] nfCheck = {"nanoha", "nf"};
-	private static final String[] fateCheck = {"fate", "fsn"};
-	private static final String[] touhouCheck = {"touhou", "thdb", "dots"};
-	private static final String[] gameCheck = {"fate", "fsn", "another", "stay night", "vamp"};
 	
-	private GameList gameList;
+	//private GameList gameList;
 	private GameTrayIcon trayIcon;
 	
 	protected static String gameName;
@@ -57,7 +53,8 @@ public class MMHGameFinder{
 		dispInfo = new DisplayGameInfo("MMH Game Finder");
 		checkString = new StringChecker();
 		gameInfo = new ArrayList<GameInfo>();
-		this.trayIcon = trayIcon;
+		//this.trayIcon = trayIcon;
+		this.trayIcon = new GameTrayIcon();
 		
 		try {
 			setupGameList();
@@ -69,58 +66,25 @@ public class MMHGameFinder{
 	private void setupGameList() throws IOException{
 		Document mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
     	getElements = mmhDoc.select("*");
-		Elements getElements = mmhDoc.select("div[class=refreshMeALL]");
+		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
 		getElements = mmhDoc.select("tr");
-		
-		int optionIndex = 0;
+
 		for(Element getElement : getElements){
 			//if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMe2")){
-			if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMeALL")){
-				optionIndex = 0;
-				for(Node childElement : getElement.childNodes()){
-					String elementString = childElement.toString().toLowerCase();
-					if(elementString.contains("bot name"))
-						options[optionIndex++] = 0;
-					else if(elementString.contains("server") && elementString.contains("location"))
-						options[optionIndex++] = 1;
-					else if(elementString.contains("running"))
-						options[optionIndex++] = 2;
-					else if(elementString.contains("current game"))
-						options[optionIndex++] = 3;
-					else if(elementString.contains("owner"))
-						options[optionIndex++] = 4;
-					else if(elementString.contains("ingame"))
-						options[optionIndex++] = 5;
-				}
-			}
-			else if(getElement.parent().parent().parent().className().equals("refreshMeALL")){
+			if(getElement.child(0).toString().toLowerCase().contains("makemehost-")){
 				GameInfo newGame = new GameInfo();
 				for(int x = 0; x < getElement.childNodes().size(); x++){
-					switch(options[x]){
-						case 0:
-							newGame.setBotName(getElement.child(x).text().toString());
-							break;
-						case 1:
-							newGame.setServer(getElement.child(x).text().toString());
-							break;
-						case 2:
-							newGame.setRunning(getElement.child(x).text().toString());
-							break;
-						case 3:
-							newGame.setCurrentGame(getElement.child(x).text().toString());
-							break;
-						case 4:
-							newGame.setOwner(getElement.child(x).text().toString());
-							break;
-						case 5:
-							newGame.setInGame(getElement.child(x).text().toString());
-							break;
-					}
+					newGame.setBotName(getElement.child(0).text().toString());
+					newGame.setServer(getElement.child(1).text().toString());
+					newGame.setRunning(getElement.child(2).text().toString());
+					newGame.setCurrentGame(getElement.child(3).text().toString());
+					newGame.setInGame(getElement.child(4).text().toString());
 				}
 					dispInfo.addGame(newGame);
 					gameInfo.add(newGame);
 			}
 		}
+		
 		dispInfo.setVisible(true);
 	}
 	
@@ -130,60 +94,26 @@ public class MMHGameFinder{
 			mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
 		} catch (IOException e) {e.printStackTrace();}
     	getElements = mmhDoc.select("*");
-		Elements getElements = mmhDoc.select("div[class=refreshMeALL]");
+		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
 		getElements = mmhDoc.select("tr");
 
-		int optionIndex = 0;
-		int gameIndex = 0;
 		gameInfo.clear();
-		
+			
 		for(Element getElement : getElements){
-			if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMeALL")){
-				optionIndex = 0;
-				for(Node childElement : getElement.childNodes()){
-					String elementString = childElement.toString().toLowerCase();
-					if(elementString.contains("bot name"))
-						options[optionIndex++] = 0;
-					else if(elementString.contains("server") && elementString.contains("location"))
-						options[optionIndex++] = 1;
-					else if(elementString.contains("running"))
-						options[optionIndex++] = 2;
-					else if(elementString.contains("current game"))
-						options[optionIndex++] = 3;
-					else if(elementString.contains("owner"))
-						options[optionIndex++] = 4;
-					else if(elementString.contains("ingame"))
-						options[optionIndex++] = 5;
-				}
-			}
-			else if(getElement.parent().parent().parent().className().equals("refreshMeALL")){
+			//if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMe2")){
+			if(getElement.child(0).toString().toLowerCase().contains("makemehost-")){
 				GameInfo newGame = new GameInfo();
 				for(int x = 0; x < getElement.childNodes().size(); x++){
-					switch(options[x]){
-					case 0:
-						newGame.setBotName(getElement.child(x).text().toString());
-						break;
-					case 1:
-						newGame.setServer(getElement.child(x).text().toString());
-						break;
-					case 2:
-						newGame.setRunning(getElement.child(x).text().toString());
-						break;
-					case 3:
-						newGame.setCurrentGame(getElement.child(x).text().toString());
-						break;
-					case 4:
-						newGame.setOwner(getElement.child(x).text().toString());
-						break;
-					case 5:
-						newGame.setInGame(getElement.child(x).text().toString());
-						break;
-					}
+					newGame.setBotName(getElement.child(0).text().toString());
+					newGame.setServer(getElement.child(1).text().toString());
+					newGame.setRunning(getElement.child(2).text().toString());
+					newGame.setCurrentGame(getElement.child(3).text().toString());
+					newGame.setInGame(getElement.child(4).text().toString());
 				}
-				gameInfo.add(newGame);
+					gameInfo.add(newGame);
+					dispInfo.updateGames(gameInfo);
 			}
 		}
-		dispInfo.updateGames(gameInfo);
 	}
     
 	public void updateGameList(){
