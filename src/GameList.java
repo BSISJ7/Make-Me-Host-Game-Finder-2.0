@@ -40,7 +40,6 @@ public class GameList {
 	protected static JFrame mainFrame;
 	private JPanel mainContainer;
 	private JButton clipboardButton;
-	private QuickSwing quickSwing;
 	
 	private JList incomingList;
 	private JList gameList;
@@ -67,7 +66,6 @@ public class GameList {
 	
 	public GameList(GetGameName setGameName){
 		getGameName = setGameName;
-		quickSwing = new QuickSwing();
 		mainFrame = new JFrame("MMH Game Finder");
 		mainContainer = new JPanel();
 		mainContainer.setLayout(new GridBagLayout());
