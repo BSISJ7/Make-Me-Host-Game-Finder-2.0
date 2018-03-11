@@ -18,10 +18,6 @@ import javax.swing.JOptionPane;
 public class GetGameName{
 	
 	private StringChecker checkString;
-	private static final String[] nfCheck = {"nanoha", "nf"};
-	private static final String[] fateCheck = {"fate", "fsn"};
-	private static final String[] touhouCheck = {"touhou", "thdb", "dots"};
-	private static final String[] gameCheck = {"fate", "fsn", "another"};
 	
 	private GameList gameList;
 	private GameTrayIcon trayIcon;
