@@ -133,7 +133,6 @@ public class DisplayGameInfo extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 477);
 		
-		
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 68, 683, 349);
 		contentPane.add(panel);
@@ -148,7 +147,7 @@ public class DisplayGameInfo extends JFrame {
 		tModel = new DefaultTableModel(); 
 		table = new JTable(tModel){
 			private static final long serialVersionUID = 1L;
-			public boolean isCellEditable(int row, int column) { return false; };
+			public boolean isCellEditable(int row, int column) { return false; }
 		};
 		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "Copy");
 		table.getActionMap().put("Copy", new AbstractAction() {

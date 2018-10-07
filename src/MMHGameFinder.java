@@ -31,9 +31,7 @@ public class MMHGameFinder{
 	
 	public MMHGameFinder(){
 		dispInfo = new DisplayGameInfo("MMH Game Finder");
-		new StringChecker();
 		gameInfo = new ArrayList<GameInfo>();
-		new GameTrayIcon();
 		
 		try {
 			setupGameList();
@@ -49,7 +47,6 @@ public class MMHGameFinder{
 		getElements = mmhDoc.select("tr");
 
 		for(Element getElement : getElements){
-			//if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMe2")){
 			if(getElement.child(0).toString().toLowerCase().contains("makemehost-")){
 				GameInfo newGame = new GameInfo();
 				for(int x = 0; x < getElement.childNodes().size(); x++){
@@ -59,8 +56,8 @@ public class MMHGameFinder{
 					newGame.setCurrentGame(getElement.child(3).text().toString());
 					newGame.setInGame(getElement.child(4).text().toString());
 				}
-					dispInfo.addGame(newGame);
-					gameInfo.add(newGame);
+				dispInfo.addGame(newGame);
+				gameInfo.add(newGame);
 			}
 		}
 		
@@ -89,8 +86,8 @@ public class MMHGameFinder{
 					newGame.setCurrentGame(getElement.child(3).text().toString());
 					newGame.setInGame(getElement.child(4).text().toString());
 				}
-					gameInfo.add(newGame);
-					dispInfo.updateGames(gameInfo);
+				gameInfo.add(newGame);
+				dispInfo.updateGames(gameInfo);
 			}
 		}
 	}

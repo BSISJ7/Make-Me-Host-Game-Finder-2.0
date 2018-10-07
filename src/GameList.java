@@ -62,24 +62,6 @@ public class GameList {
 	protected static DefaultListModel<String> incomingListModel;
 	protected static DefaultListModel queueListModel;
 	
-	
-	public GameList(GetGameName setGameName){
-		getGameName = setGameName;
-		mainFrame = new JFrame("MMH Game Finder");
-		mainContainer = new JPanel();
-		mainContainer.setLayout(new GridBagLayout());
-		mainFrame.add(mainContainer);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		setup();
-		setupFrame();
-		mainFrame.setVisible(true);
-		mainFrame.pack();
-		try {
-			SystemTray.getSystemTray().add(GameTrayIcon.icon);
-		} catch (AWTException e) {}
-	}
-	
 	public void setupFrame(){
 		mainFrame.addWindowListener(new WindowListener(){
 			public void windowActivated(WindowEvent arg0){}
@@ -95,98 +77,6 @@ public class GameList {
 			public void windowOpened(WindowEvent arg0) {}
 			
 		});
-	}
-	
-	public void setup(){
-		GridBagConstraints gridConst = new GridBagConstraints();
-		
-		JButton exitButton = new JButton("Exit");
-		exitButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event){
-				System.exit(0);
-			}
-		});
-		exitButton.setPreferredSize(new Dimension(130,30));
-
-		gameListModel = new DefaultListModel<String>();
-		gameList = new JList<String>(gameListModel);
-		
-		incomingListModel = new DefaultListModel<String>();
-		incomingList = new JList<String>(incomingListModel);
-
-		queueListModel = new DefaultListModel<String>();
-		queueList = new JList<String>(queueListModel);
-		
-		JSeparator incDivide = new JSeparator();
-		incDivide.setOrientation(SwingConstants.VERTICAL);
-		incDivide.setPreferredSize(new Dimension(1,600));
-		incDivide.setOpaque(false);
-		incDivide.setBackground(Color.white);
-		incDivide.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		
-		
-		JSplitPane incomingPanel = new JSplitPane();
-		incomingPanel.setLeftComponent(incomingList);
-		incomingPanel.setRightComponent(queueList);
-		incomingPanel.setPreferredSize(new Dimension(400,600));
-		incomingPanel.setMinimumSize(new Dimension(400,600));
-		incomingPanel.setOpaque(false);
-		incomingPanel.setVisible(true);
-		incomingPanel.setDividerLocation(200);
-		
-		JScrollPane incomingListContainer = new JScrollPane(incomingPanel);
-		incomingListContainer.setPreferredSize(new Dimension(400,200));
-		incomingListContainer.setMinimumSize(new Dimension(400,600));
-		incomingListContainer.getViewport().setOpaque(false);
-		
-		JScrollPane gameListContainer = new JScrollPane(gameList);
-		gameListContainer.setPreferredSize(new Dimension(400,200));
-		gameListContainer.setMinimumSize(new Dimension(400,600));
-		gameListContainer.getViewport().setOpaque(false);
-
-		JTabbedPane gameTabbedPane = new JTabbedPane();
-		gameTabbedPane.add("Game List", gameListContainer);
-		gameTabbedPane.add("Incoming List", incomingListContainer);
-		
-		gridConst.fill = 1;
-		gridConst.gridx = 0;
-		gridConst.gridy = 0;
-		mainContainer.add(gameTabbedPane, gridConst);
-
-		setupMenuBar();
-
-		//Setup the clipboard button
-		clipboardButton = new JButton("Copy To Clipboard");
-		clipboardButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event){ 
-				StringSelection clipboardText = null;
-				if(!gameList.isSelectionEmpty() && gameList.isShowing()){
-					clipboardText = new StringSelection((String) gameListModel.getElementAt(gameList.getSelectedIndex()));
-				}
-				else if(!incomingList.isSelectionEmpty() && incomingList.isShowing()){
-					clipboardText = new StringSelection((String) incomingListModel.getElementAt(incomingList.getSelectedIndex()));						
-				}
-				try{
-					Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
-					clipBoard.setContents(clipboardText, clipboardText);
-				}catch(NullPointerException NPE){System.out.println("Null Info");}
-			}
-		});
-		
-		gridConst.gridx = 0;
-		gridConst.gridy = 1;
-		mainContainer.add(clipboardButton, gridConst);
-
-		gridConst.gridx = 0;
-		gridConst.gridy = 2;
-		mainContainer.add(exitButton, gridConst); 
-		
-		try {
-			trayIcon = new GameTrayIcon(this);
-			trayIcon.setupIcon();
-			getGameName.setTrayIcon(trayIcon);
-		}catch (AWTException e) {
-		}catch (InterruptedException e) {}
 	}
 
 	public static void copyToClipBoard(String gameName){

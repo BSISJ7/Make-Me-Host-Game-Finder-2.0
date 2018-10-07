@@ -22,15 +22,13 @@ public class GameTrayIcon {
 	protected static TrayIcon icon;
 	private GameList gameList;
 	private JFrame mainFrame;
-	
-	public GameTrayIcon(GameList getList){
-		gameList = getList;
-	}
-	
-	public GameTrayIcon() {}
 
 	public GameTrayIcon(JFrame getFrame){
 		mainFrame = getFrame;
+	}
+	
+	protected void setGameList(GameList newList) {
+		this.gameList = newList;
 	}
 	
 	public void setupIcon() throws AWTException, InterruptedException {

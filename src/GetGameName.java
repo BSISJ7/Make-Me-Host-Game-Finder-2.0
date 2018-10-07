@@ -30,48 +30,13 @@ public class GetGameName{
 	
 	public GetGameName(Object o){}
 	
-	public GetGameName(){
-		incomingGames = new ArrayList<String>();
-		gameNames = new ArrayList<String>();
-		ownerNames = new ArrayList<String>();
-		numOfPlayers = new ArrayList<String>();
-		botNames = new ArrayList<String>();
-		queuePosition = new ArrayList<String>();
-		
-		gameList = new GameList(this);
-		gameList.updateGameList();
-		
-		checkString = new StringChecker();
-	}
-	
 	public void getData(){
 		try {
-			 /*Connection.Response response = Jsoup.connect("http://makemehost.com/lobby-and-queue.php")
-			                         .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
-			                         .timeout(10000)
-			                         .execute();
-
-			 int statusCode = response.statusCode();
-			 if(statusCode == 200) {
-			     Document doc = Jsoup.connect("http://makemehost.com/lobby-and-queue.php").get();//connection.get();
-			     Elements element = doc.select("loc");   
-			     for (Element urls : element) {
-			         System.out.println(urls.text());
-			     }
-			 }
-			 else
-			     System.out.println("received error code : " + statusCode);*/
-			     
-			//http://makemehost.com/index.php
 			Document mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
-			//Document mmhDoc = Jsoup.connect("https://encrypted.google.com/").get();
 	    	getElements = mmhDoc.select("*");
 			removeOldGames();
 			displayNewGame();
 		} catch (IOException e){
-			//JOptionPane.showMessageDialog(null,e);
-			//GameList.mainFrame.setVisible(true);
-			
 			System.out.println(e+" (Time: "+LocalTime.now().getHour() +":"+LocalTime.now().getHour()+")");
 		}
 	}
@@ -185,53 +150,6 @@ public class GetGameName{
 		}
 	}
 	
-	
-    /*private void displayNewGame() throws IOException{
-    	String announceGames = "";
-    	String announceIncomingGames = "";
-    	//Elements getElements = doc.select("div[class=refreshMe2]");
-    	int index = 0;
-    	
-    	for(Element getElement : getElements){
-    		if(getElement.tagName().equals("td")){
-    			if(getElement.parent().parent().parent().parent().className().equals("refreshMe2")){
-        			if(getElement.toString().contains("MakeMeHost")){
-                		System.out.println(getElement);
-        				index = 0;
-        			}
-        			else
-        				index++;
-		    		if(getElement.ownText().length() > 0 && checkString.checkForString((getElement.ownText()), gameCheck) && index == 2){
-		    			if(!DuplicateChecker.dupElementChk(getElement.text(),gameNames)){
-			    			announceGames += "\n"+getElement.text();
-				    		gameNames.add(getElement.text());
-							GameList.gameListModel.addElement(getElement.text());
-		    			}
-		    		}
-    			}
-    			else if(getElement.parent().parent().parent().parent().className().equals("refreshMe3")){
-    				if(getElement.ownText().length() > 0 && checkString.checkForString((getElement.ownText()), gameCheck)){
-		    			if(!DuplicateChecker.dupElementChk(getElement.text(),incomingGames)){
-		    				if(!getElement.lastElementSibling().equals(getElement)){
-		    					if(!getElement.toString().contains("Game Name")){
-			    					String getParent = getElement.parent().toString();
-			    					queuePosition.add(getParent.substring(10,getParent.indexOf("</td>")));
-			    					String queuePosition = getParent.substring(10,getParent.indexOf("</td>"));
-				    				announceIncomingGames += "\n"+getElement.text();
-					    			incomingGames.add(getElement.text());
-									GameList.incomingListModel.addElement(getElement.text());
-									GameList.queueListModel.addElement(queuePosition);
-		    					}
-		    				}
-		    			}
-		    		}
-    			}
-    		}    		
-    	}
-    	if(!announceGames.equals("") || !announceIncomingGames.equals("")){
-    		trayIcon.displayMessage(announceGames, announceIncomingGames);
-    	}
-    }*/
     
     public void removeOldGame() throws IOException{
     	Document doc = Jsoup.connect("http://makemehost.com/lobby-and-queue.php").get();
@@ -247,7 +165,6 @@ public class GetGameName{
         print("Fetching %s...", url);
 
         Document doc = Jsoup.connect(url).get();
-        //Elements links = doc.select("a[href]");
         Elements media = doc.select("[src]");
         Elements imports = doc.select("link[href]");
         Elements links = doc.select("[Map]");
@@ -269,7 +186,6 @@ public class GetGameName{
 
         print("\nLinks: (%d)", links.size());
         for (Element link : links) {
-           // print(" * a: <%s> (%s)", link.attr("abs:href"), trim(link.text(), 35));
         	System.out.println(link.text());
         }
 	}
