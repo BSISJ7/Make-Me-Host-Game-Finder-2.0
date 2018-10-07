@@ -1,6 +1,3 @@
-
-
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,9 +5,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.swing.JOptionPane;
+import java.time.LocalTime;
 
 /**
 * Example program to list links from a URL.
@@ -18,16 +13,10 @@ import javax.swing.JOptionPane;
 public class GetGameName{
 	
 	private StringChecker checkString;
-	private static final String[] nfCheck = {"nanoha", "nf"};
-	private static final String[] fateCheck = {"fate", "fsn"};
-	private static final String[] touhouCheck = {"touhou", "thdb", "dots"};
 	private static final String[] gameCheck = {"fate", "fsn", "another"};
 	
 	private GameList gameList;
 	private GameTrayIcon trayIcon;
-	private boolean retrieveData = false;
-	private boolean trCheck = false;
-	
 	protected static String gameName;
 	protected static ArrayList<String> incomingGames;
 	protected static ArrayList<String> gameNames;
@@ -82,7 +71,8 @@ public class GetGameName{
 		} catch (IOException e){
 			//JOptionPane.showMessageDialog(null,e);
 			//GameList.mainFrame.setVisible(true);
-			System.out.println(e+" (Time: "+new Date().getHours()+":"+new Date().getMinutes()+")");
+			
+			System.out.println(e+" (Time: "+LocalTime.now().getHour() +":"+LocalTime.now().getHour()+")");
 		}
 	}
 	
@@ -91,13 +81,11 @@ public class GetGameName{
 				
     	ArrayList<String> removeGame = new ArrayList<String>();
     	boolean removeString = true;
-    	int index = 0;
     	for(String gameName : gameNames){
     		removeString = true;
     		for(Element getElement : getElements){
         		if(getElement.tagName().equalsIgnoreCase("td")){
         			if(getElement.toString().contains("MakeMeHost") || getElement.toString().contains("ENT")){
-        				index = 0;
         			}
     	    		if(getElement.ownText().length() > 0 && checkString.checkForString((getElement.ownText()), gameCheck)){
 			    		if(gameName.equalsIgnoreCase(getElement.text())){
@@ -157,9 +145,6 @@ public class GetGameName{
 	private void displayNewGame() throws IOException{
 		String announceGames = "";
 		String announceIncomingGames = "";
-		//Elements getElements = doc.select("div[class=refreshMe2]");
-		int index = 0;
-		
 		for(Element getElement : getElements){
 			if(getElement.tagName().equals("td")){
 				if(getElement.parent().parent().parent().parent().className().equals("refreshMe2")){

@@ -1,21 +1,11 @@
-
-
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import org.w3c.dom.NodeList;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -23,11 +13,6 @@ import javax.swing.Timer;
 * Example program to list links from a URL.
 */
 public class MMHGameFinder{
-	
-	private StringChecker checkString;
-	
-	//private GameList gameList;
-	private GameTrayIcon trayIcon;
 	
 	protected static String gameName;
 	protected static ArrayList<String> incomingGames;
@@ -42,19 +27,13 @@ public class MMHGameFinder{
 	
 	private ArrayList<GameInfo> gameInfo;
 
-	private Elements getElements;
-	
-	private int[] options;
-	
 	public MMHGameFinder(Object o){}
 	
 	public MMHGameFinder(){
-		options = new int[6];
 		dispInfo = new DisplayGameInfo("MMH Game Finder");
-		checkString = new StringChecker();
+		new StringChecker();
 		gameInfo = new ArrayList<GameInfo>();
-		//this.trayIcon = trayIcon;
-		this.trayIcon = new GameTrayIcon();
+		new GameTrayIcon();
 		
 		try {
 			setupGameList();
@@ -65,7 +44,7 @@ public class MMHGameFinder{
 	
 	private void setupGameList() throws IOException{
 		Document mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
-    	getElements = mmhDoc.select("*");
+    	mmhDoc.select("*");
 		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
 		getElements = mmhDoc.select("tr");
 
@@ -93,7 +72,7 @@ public class MMHGameFinder{
 		try {
 			mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
 		} catch (IOException e) {e.printStackTrace();}
-    	getElements = mmhDoc.select("*");
+    	mmhDoc.select("*");
 		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
 		getElements = mmhDoc.select("tr");
 
@@ -131,6 +110,6 @@ public class MMHGameFinder{
 	}
    
     public static void main(String[] args) throws IOException {
-    	MMHGameFinder run = new MMHGameFinder();
+    	new MMHGameFinder();
     }
 }

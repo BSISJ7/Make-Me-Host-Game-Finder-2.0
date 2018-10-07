@@ -36,7 +36,6 @@ import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.border.TitledBorder;
 
-
 public class DisplayGameInfo extends JFrame {
 
 	private JPanel contentPane;
@@ -79,8 +78,6 @@ public class DisplayGameInfo extends JFrame {
 			}
 			public void keyTyped(KeyEvent arg0) {}
 		});
-		
-		Button test = new Button("Test BUtton");
 		
 		JButton saveFilter = new JButton ("Save Filter");
 		saveFilter.addActionListener(new ActionListener(){
@@ -141,7 +138,6 @@ public class DisplayGameInfo extends JFrame {
 		panel.setBounds(0, 68, 683, 349);
 		contentPane.add(panel);
 		
-		String[] columns = {"Game Name", "Host", "Ingame"};
 		panel.setLayout(null);
 		
 		scrollPane = new JScrollPane();

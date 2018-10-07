@@ -41,9 +41,9 @@ public class GameList {
 	private JPanel mainContainer;
 	private JButton clipboardButton;
 	
-	private JList incomingList;
-	private JList gameList;
-	private JList queueList;
+	private JList<String> incomingList;
+	private JList<String> gameList;
+	private JList<String> queueList;
 	
 	private JRadioButtonMenuItem minTrayOption;
 	private JRadioButtonMenuItem disableTrayOption;
@@ -52,15 +52,14 @@ public class GameList {
 	protected JRadioButtonMenuItem enableMessages;
 	
 	private boolean minToTray = true;
-	private boolean exitToTray = false;
 	private boolean disableTray = false;
 	
 	private GameTrayIcon trayIcon;
 	
 	private GetGameName getGameName;
 
-	protected static DefaultListModel gameListModel;
-	protected static DefaultListModel incomingListModel;
+	protected static DefaultListModel<String> gameListModel;
+	protected static DefaultListModel<String> incomingListModel;
 	protected static DefaultListModel queueListModel;
 	
 	
@@ -109,14 +108,14 @@ public class GameList {
 		});
 		exitButton.setPreferredSize(new Dimension(130,30));
 
-		gameListModel = new DefaultListModel();
-		gameList = new JList(gameListModel);
+		gameListModel = new DefaultListModel<String>();
+		gameList = new JList<String>(gameListModel);
 		
-		incomingListModel = new DefaultListModel();
-		incomingList = new JList(incomingListModel);
+		incomingListModel = new DefaultListModel<String>();
+		incomingList = new JList<String>(incomingListModel);
 
-		queueListModel = new DefaultListModel();
-		queueList = new JList(queueListModel);
+		queueListModel = new DefaultListModel<String>();
+		queueList = new JList<String>(queueListModel);
 		
 		JSeparator incDivide = new JSeparator();
 		incDivide.setOrientation(SwingConstants.VERTICAL);
@@ -247,18 +246,15 @@ public class GameList {
 				
 				if(source.equals("enableMin")){
 					minToTray = true;
-					exitToTray = false;
 					disableTray = false;
 				} 
 				else if(source.equals("enableExit")){
 					minToTray = false;
-					exitToTray = true;
 					disableTray = false;
 				}
 
 				else if(source.equals("disableTray")){
 					minToTray = false;
-					exitToTray = false;
 					disableTray = true;
 					SystemTray.getSystemTray().remove(GameTrayIcon.icon);
 				}

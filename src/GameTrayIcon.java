@@ -2,14 +2,10 @@ import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.Panel;
-import java.awt.SystemTray;
 import java.awt.TrayIcon;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.metal.MetalIconFactory;
 
@@ -39,11 +35,9 @@ public class GameTrayIcon {
 	
 	public void setupIcon() throws AWTException, InterruptedException {
 		Icon defaultIcon = MetalIconFactory.getTreeComputerIcon();
-		String imgString = "C:\\Users\\t5gh5gg3\\Pictures\\TempFile.jpg";
 		Image img = new BufferedImage(defaultIcon.getIconWidth(), defaultIcon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
  
         defaultIcon.paintIcon(new Panel(), img.getGraphics(), 0, 0);
-		Image iconImg = new ImageIcon(imgString).getImage();
 		
 		TrayIcon icon = new TrayIcon(img, "MMH Game Finder", setupPopup());
 		icon.addActionListener(new ActionListener(){
