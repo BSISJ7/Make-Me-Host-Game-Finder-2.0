@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.metal.MetalIconFactory;
 
 import java.awt.PopupMenu;
+import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -18,87 +19,75 @@ import java.awt.image.BufferedImage;
 
 public class GameTrayIcon {
 
-	protected static boolean displayMessage;
-	protected static TrayIcon icon;
-	private GameList gameList;
+	protected TrayIcon icon;
 	private JFrame mainFrame;
-
-	public GameTrayIcon(JFrame getFrame){
-		mainFrame = getFrame;
+	private DisplayGameInfo displayGameInfo;
+	
+	public GameTrayIcon() {}
+	
+	public void setWindow(JFrame frame) {
+		mainFrame = frame;
 	}
 	
-	protected void setGameList(GameList newList) {
-		this.gameList = newList;
+	public void setDispInfo(DisplayGameInfo displayGameInfo) {
+		this.displayGameInfo = displayGameInfo;
 	}
 	
-	public void setupIcon() throws AWTException, InterruptedException {
+	public void setupIcon() {
 		Icon defaultIcon = MetalIconFactory.getTreeComputerIcon();
 		Image img = new BufferedImage(defaultIcon.getIconWidth(), defaultIcon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
- 
         defaultIcon.paintIcon(new Panel(), img.getGraphics(), 0, 0);
 		
-		TrayIcon icon = new TrayIcon(img, "MMH Game Finder", setupPopup());
-		icon.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event){
-				SwingUtilities.invokeLater(new Runnable(){
-					public void run(){
-						if(mainFrame.getExtendedState() == JFrame.ICONIFIED){
-							int state = mainFrame.getExtendedState();
-							state = state & JFrame.MAXIMIZED_BOTH;
-							mainFrame.setExtendedState(state);
-							mainFrame.toFront();
-							mainFrame.requestFocus();
-							mainFrame.repaint();
-							mainFrame.setVisible(true);
-							mainFrame.setAlwaysOnTop(true);
-							mainFrame.setAlwaysOnTop(false);
-							mainFrame.toFront();
-						}
-						else{
-							mainFrame.toFront();
-						}
-					}
-				});
+		icon = new TrayIcon(img, "MMH Game Finder", setupPopup());
+		icon.addActionListener(event -> SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				if(mainFrame.getExtendedState() == JFrame.ICONIFIED){
+					int state = mainFrame.getExtendedState();
+					state = state & JFrame.MAXIMIZED_BOTH;
+					mainFrame.setExtendedState(state);
+					mainFrame.toFront();
+					mainFrame.requestFocus();
+					mainFrame.repaint();
+					mainFrame.setVisible(true);
+					mainFrame.setAlwaysOnTop(true);
+					mainFrame.setAlwaysOnTop(false);
+					mainFrame.toFront();
+				}
+				else{
+					mainFrame.toFront();
+				}
 			}
-		});
-
-		setIcon(icon);
+		}));
 	}
 	
 	public void displayMessage(String gameName, String incomingGames){
-		if(displayMessage){
+		if(displayGameInfo.enableMessages.isSelected()){
 			icon.displayMessage("Game Hosted", "Game Name(s): "+ gameName+
 					"\nIncoming Games: "+incomingGames, TrayIcon.MessageType.INFO);
 		}
 	}
 	
 	public void displayMessage(String gameName){
-		if(displayMessage){
+		if(displayGameInfo.enableMessages.isSelected()){
+			System.out.println("Displaying Message: ");
 			icon.displayMessage("Game Hosted", "Game Name(s): "+ gameName, TrayIcon.MessageType.INFO);
 		}
 	}
 	
-	public void setIcon(TrayIcon icon){
-		this.icon = icon;
-	}
-	
 	public PopupMenu setupPopup(){
 		PopupMenu popup = new PopupMenu();
-		displayMessage = true;
 		
 		MenuItem disableMessages = new MenuItem("Disable Messages");
 		disableMessages.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
-				displayMessage = false;
-				gameList.disableMessages.setSelected(true);
+				displayGameInfo.disableMessages.setSelected(true);
 			}
 		});
 
 		MenuItem enableMessages = new MenuItem("Enable Messages");
 		enableMessages.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event){
-				displayMessage = true;
-				gameList.enableMessages.setSelected(true);
+				displayGameInfo.enableMessages.setSelected(true);
 			}
 		});
 		

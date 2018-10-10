@@ -2,7 +2,6 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -15,20 +14,22 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.Collection;
-
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -36,24 +37,41 @@ import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.border.TitledBorder;
 
+
 public class DisplayGameInfo extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
 	private JScrollPane scrollPane;
 	private DefaultTableModel tModel;
-	private GameTrayIcon trayIcon;
-	private ArrayList<String> gameList = new ArrayList<String>();
-	private StringChecker checkString;
+	private ArrayList<String> nameFilterList = new ArrayList<String>();
 	private JTextArea textFilter;
-	protected JFrame mainFrame;
-	
+    private JFrame mainFrame;
+    private GameTrayIcon trayIcon;
+
+    private List<GameInfo> prevGameList = new ArrayList<>();
+
+    Function<GameInfo, Boolean> isGameInList = gameInfo ->
+            prevGameList.stream().anyMatch(game ->game.getBotName().equals(gameInfo.getBotName()));
+    Function<GameInfo, Boolean> isNameOnFilterList = gameInfo -> nameFilterList.stream().anyMatch(nameFilter -> Pattern.compile(Pattern.quote(nameFilter),
+            Pattern.CASE_INSENSITIVE).matcher(gameInfo.getGameName()).find());
+
+	protected JRadioButtonMenuItem disableMessages;
+	protected JRadioButtonMenuItem enableMessages;
+	private JRadioButtonMenuItem minTrayOption;
+	private JRadioButtonMenuItem disableTrayOption;
+	private JRadioButtonMenuItem exitTrayOption;
+
+	private boolean disableTray = false;
+	private boolean minToTray = false;
 
 	/**
 	 * Create the frame.
 	 */
 	public DisplayGameInfo(String GameName) {
 		super(GameName);
+		
+		trayIcon = new GameTrayIcon();
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -79,6 +97,8 @@ public class DisplayGameInfo extends JFrame {
 			public void keyTyped(KeyEvent arg0) {}
 		});
 		
+		Button test = new Button("Test BUtton");
+		
 		JButton saveFilter = new JButton ("Save Filter");
 		saveFilter.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -99,10 +119,86 @@ public class DisplayGameInfo extends JFrame {
 		JMenu optionsMenu = new JMenu("Save/Load");
 		optionsMenu.add(saveFilter);
 		optionsMenu.add(loadFilter);
-		//optionsMenu.add(test);
+
+		enableMessages = new JRadioButtonMenuItem("Enable Messages");
+		disableMessages = new JRadioButtonMenuItem("Disable Messages");
+
+		ButtonGroup messageGroup = new ButtonGroup();
+		messageGroup.add(enableMessages);
+		messageGroup.add(disableMessages);
+		enableMessages.setSelected(true);
+		
+		JMenu messagesMenu = new JMenu("Messages");
+		messagesMenu.add(enableMessages);
+		messagesMenu.add(disableMessages);
+		
+		ButtonGroup optionsGroup = new ButtonGroup();
+		minTrayOption = new JRadioButtonMenuItem ("Minimize To Tray");
+		exitTrayOption = new JRadioButtonMenuItem ("Exit To Tray");
+		disableTrayOption = new JRadioButtonMenuItem ("Disable Tray Icon");
+
+		optionsGroup.add(minTrayOption); 
+		optionsGroup.add(exitTrayOption); 
+		optionsGroup.add(disableTrayOption);
+		minTrayOption.setSelected(true);
+
+		ActionListener menuListener = event -> {
+            String source =  event.getActionCommand();
+            if(disableTray && !source.equals("disableTray")) {
+                try {
+                    SystemTray.getSystemTray().add(trayIcon.icon);
+                    disableTray = false;
+                } catch (AWTException e) {e.printStackTrace();}
+            }
+
+            if(source.equals("enableMin")){
+                minToTray = true;
+            }
+            else if(source.equals("enableExit")){
+                minToTray = false;
+            }
+
+            else if(source.equals("disableTray")){
+                minToTray = false;
+                SystemTray.getSystemTray().remove(trayIcon.icon);
+                disableTray = true;
+            }
+
+            else if(source.equals("enableMsgs")){
+                enableMessages.setSelected(true);
+                disableMessages.setSelected(false);
+            }
+
+            else if(source.equals("disableMsgs")){
+                disableMessages.setSelected(true);
+                enableMessages.setSelected(false);
+                trayIcon.displayMessage("WIBBLE", "WOBBLES");
+            }
+
+        };
+
+		enableMessages.setActionCommand("enableMsgs");
+		enableMessages.addActionListener(menuListener); 
+		disableMessages.setActionCommand("disableMsgs");
+		disableMessages.addActionListener(menuListener); 
+		
+		minTrayOption.setActionCommand("enableMin");
+		minTrayOption.addActionListener(menuListener); 
+		exitTrayOption.setActionCommand("enableExit");
+		exitTrayOption. addActionListener (menuListener); 
+		disableTrayOption.setActionCommand("disableTray");
+		disableTrayOption. addActionListener (menuListener);
+		
+		JMenu trayOptions = new JMenu("Options");
+		trayOptions.add(minTrayOption);
+		trayOptions.add(exitTrayOption); 
+		trayOptions.add(disableTrayOption);
+
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(optionsMenu);
+		menuBar.add(messagesMenu);
+		menuBar.add(trayOptions);
 		
 		this.setJMenuBar(menuBar);
 		
@@ -122,14 +218,14 @@ public class DisplayGameInfo extends JFrame {
 			
 		});
 		
-		trayIcon = new GameTrayIcon(mainFrame);
-		checkString = new StringChecker();
+		trayIcon.setDispInfo(this);
+		trayIcon.setWindow(mainFrame);
 		
 		try {
 			trayIcon.setupIcon();
-			SystemTray.getSystemTray().add(GameTrayIcon.icon);
-		} catch (AWTException e) {e.printStackTrace();} catch (InterruptedException e) {e.printStackTrace();}
-		
+			SystemTray.getSystemTray().add(trayIcon.icon);
+		} catch (AWTException e) {e.printStackTrace();}
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 477);
 		
@@ -144,7 +240,7 @@ public class DisplayGameInfo extends JFrame {
 		panel.add(scrollPane);
 
 		
-		tModel = new DefaultTableModel(); 
+		tModel = new DefaultTableModel();
 		table = new JTable(tModel){
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row, int column) { return false; }
@@ -152,12 +248,10 @@ public class DisplayGameInfo extends JFrame {
 		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "Copy");
 		table.getActionMap().put("Copy", new AbstractAction() {
 		      public void actionPerformed(ActionEvent e) {
-		    	  int x = table.getSelectedRow();
 		    	  int y = table.getSelectedColumn();
 		    	  
-		    	  
 		    	  if(table.getSelectedRow() != -1 && table.getSelectedColumn() != -1){
-			    	  x = table.convertRowIndexToModel(table.getSelectedRow());
+			    	  int x = table.convertRowIndexToModel(table.getSelectedRow());
 			    	  StringSelection clipBoardData = new StringSelection((String) tModel.getValueAt(x, y));
 			    	  try{
 							Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -188,39 +282,40 @@ public class DisplayGameInfo extends JFrame {
 	
 	public void addGame(GameInfo gameInfo){
 		tModel.addRow(new Object[]{gameInfo.getBotName(), gameInfo.getServer(), gameInfo.getRunning(),
-				gameInfo.getCurrentGame(), gameInfo.getOwner(), gameInfo.getInGame()});
+				gameInfo.getGameName(), gameInfo.getOwner(), gameInfo.getInGame()});
 	}
 	
-	public void updateGames(ArrayList<GameInfo> gameInfo){
-		while(tModel.getRowCount() > gameInfo.size()){
+	public void updateGames(List<GameInfo> gameList){
+		while(tModel.getRowCount() > gameList.size()){
 			tModel.removeRow(tModel.getRowCount()-1);
 		}
-		while(tModel.getRowCount() < gameInfo.size()){
+		while(tModel.getRowCount() < gameList.size()){
 			tModel.addRow(new Object[]{"","","","","",""});
 		}
 
 		int index = 0;
-		String newGame = "";
-		for(GameInfo info : gameInfo){
-			for(int x = 0; x < tModel.getRowCount(); x++){
-				//Checks if its the same bot and the game name has changed
-				if(info.getBotName().equalsIgnoreCase((String)tModel.getValueAt(x, 0)) && !info.getCurrentGame().equalsIgnoreCase((String)tModel.getValueAt(x, 3))){
-					if(checkString.checkForString((info.getCurrentGame()), gameList) && info.getCurrentGame().trim().length() > 0){
-						newGame += info.getCurrentGame()+"\n";
-					}
-				}
-			}
+		String gameAnnouncment = "";
+		List<GameInfo> newGames = new ArrayList<>();
+		for(GameInfo gameInfo : gameList){
 
-			tModel.setValueAt(info.getBotName(), index, 0);
-			tModel.setValueAt(info.getServer(), index, 1);
-			tModel.setValueAt(info.getRunning(), index, 2);
-			tModel.setValueAt(info.getCurrentGame(), index, 3);
-			tModel.setValueAt(info.getOwner(), index, 4);
-			tModel.setValueAt(info.getInGame(), index++, 5);
+            if(gameInfo.getGameName().length() > 0 && !isGameInList.apply(gameInfo) && isNameOnFilterList.apply(gameInfo)){
+				gameAnnouncment += gameInfo.getGameName()+"\n";
+			}
+            if(gameInfo.getGameName().length() > 0 && isNameOnFilterList.apply(gameInfo)){
+                newGames.add(gameInfo);
+            }
+
+			tModel.setValueAt(gameInfo.getBotName(), index, 0);
+			tModel.setValueAt(gameInfo.getServer(), index, 1);
+			tModel.setValueAt(gameInfo.getRunning(), index, 2);
+			tModel.setValueAt(gameInfo.getGameName(), index, 3);
+			tModel.setValueAt(gameInfo.getOwner(), index, 4);
+			tModel.setValueAt(gameInfo.getInGame(), index++, 5);
 		}
-		if(newGame.trim().length() > 0)
-			trayIcon.displayMessage(newGame);
-		
+		if(gameAnnouncment.trim().length() > 0 && enableMessages.isSelected()) {
+			trayIcon.displayMessage(gameAnnouncment);
+		}
+		prevGameList = newGames.stream().collect(Collectors.toList());
 		applyTableFilter();
 	}
 	
@@ -228,12 +323,12 @@ public class DisplayGameInfo extends JFrame {
 		int x = table.getSelectedRow();
 		int y = table.getSelectedColumn();
 		
-		gameList.clear();
+		nameFilterList.clear();
 		String[] getStrings = textFilter.getText().split("\\|");
 		for(String aString : getStrings){
-			gameList.add(aString);
+			nameFilterList.add(aString);
 		}
-		
+
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>(tModel);
 		table.setRowSorter(sorter);
 	    RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("(?i)"+textFilter.getText().replace("\\", "\\\\"),3);

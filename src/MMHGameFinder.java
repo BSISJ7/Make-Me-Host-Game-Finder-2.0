@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -14,24 +16,14 @@ import javax.swing.Timer;
 */
 public class MMHGameFinder{
 	
-	protected static String gameName;
-	protected static ArrayList<String> incomingGames;
-	protected static ArrayList<String> gameNames;
-	protected static ArrayList<String> botNames;
-	protected static ArrayList<String> ownerNames;
-	protected static ArrayList<String> numOfPlayers;
-	protected static ArrayList<String> queuePosition;
-	protected static ArrayList<Integer> numberOfPlayers;
-	
 	private DisplayGameInfo dispInfo;
 	
 	private ArrayList<GameInfo> gameInfo;
-
-	public MMHGameFinder(Object o){}
 	
 	public MMHGameFinder(){
+		
 		dispInfo = new DisplayGameInfo("MMH Game Finder");
-		gameInfo = new ArrayList<GameInfo>();
+		gameInfo = new ArrayList<>();
 		
 		try {
 			setupGameList();
@@ -43,8 +35,7 @@ public class MMHGameFinder{
 	private void setupGameList() throws IOException{
 		Document mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
     	mmhDoc.select("*");
-		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
-		getElements = mmhDoc.select("tr");
+		Elements getElements = mmhDoc.select("tr");
 
 		for(Element getElement : getElements){
 			if(getElement.child(0).toString().toLowerCase().contains("makemehost-")){
@@ -53,7 +44,7 @@ public class MMHGameFinder{
 					newGame.setBotName(getElement.child(0).text().toString());
 					newGame.setServer(getElement.child(1).text().toString());
 					newGame.setRunning(getElement.child(2).text().toString());
-					newGame.setCurrentGame(getElement.child(3).text().toString());
+					newGame.setGameName(getElement.child(3).text().toString());
 					newGame.setInGame(getElement.child(4).text().toString());
 				}
 				dispInfo.addGame(newGame);
@@ -70,32 +61,30 @@ public class MMHGameFinder{
 			mmhDoc = Jsoup.connect("http://makemehost.com/games.php").timeout(10000).get();
 		} catch (IOException e) {e.printStackTrace();}
     	mmhDoc.select("*");
-		Elements getElements = mmhDoc.select("div[class=refreshMeMMH]");
-		getElements = mmhDoc.select("tr");
+		Elements getElements = mmhDoc.select("tr");
 
 		gameInfo.clear();
 			
 		for(Element getElement : getElements){
-			//if(getElement.child(0).toString().toLowerCase().contains("bot name") && getElement.parent().parent().parent().className().equals("refreshMe2")){
 			if(getElement.child(0).toString().toLowerCase().contains("makemehost-")){
 				GameInfo newGame = new GameInfo();
 				for(int x = 0; x < getElement.childNodes().size(); x++){
-					newGame.setBotName(getElement.child(0).text().toString());
-					newGame.setServer(getElement.child(1).text().toString());
-					newGame.setRunning(getElement.child(2).text().toString());
-					newGame.setCurrentGame(getElement.child(3).text().toString());
-					newGame.setInGame(getElement.child(4).text().toString());
+					newGame.setBotName(getElement.child(0).text());
+					newGame.setServer(getElement.child(1).text());
+					newGame.setRunning(getElement.child(2).text());
+					newGame.setGameName(getElement.child(3).text());
+					newGame.setInGame(getElement.child(4).text());
 				}
 				gameInfo.add(newGame);
-				dispInfo.updateGames(gameInfo);
 			}
 		}
+		dispInfo.updateGames(Collections.unmodifiableList(gameInfo));
 	}
     
 	public void updateGameList(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				Timer updateListTimer = new Timer(500, new ActionListener(){
+				Timer updateListTimer = new Timer(2000, new ActionListener(){
 					public void actionPerformed(ActionEvent event){
 						updateGameInfo();
 					}

@@ -1,18 +1,18 @@
 
 public class GameInfo {
 
-	String botName;
-	String server;
-	String running;
-	String currentGame;
-	String owner;
-	String inGame;
+	private String botName;
+	private String server;
+	private String running;
+	private String gameName;
+	private String owner;
+	private String inGame;
 	
 	public GameInfo(){
 		botName = "";
 		running = "";
 		server = "";
-		currentGame = "";
+		gameName = "";
 		owner = "";
 		inGame = "";
 	}
@@ -29,8 +29,8 @@ public class GameInfo {
 		this.running = running;
 	}
 	
-	public void setCurrentGame(String currentGame){
-		this.currentGame = currentGame;
+	public void setGameName(String gameName){
+		this.gameName = gameName;
 	}
 	
 	public void setOwner(String owner){
@@ -53,8 +53,8 @@ public class GameInfo {
 		return running;
 	}
 
-	public String getCurrentGame(){
-		return currentGame;
+	public String getGameName(){
+		return gameName;
 	}
 
 	public String getOwner(){
